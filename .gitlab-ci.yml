@@ -13,12 +13,12 @@ image: docker-registry.net-ng.com/nng/dind-ubuntu:7
 
 tests2:
   script:
-    - pip2 install flake8 pytest .
+    - pip2 install flake8 pytest
     - flake8 nagare
-    - pytest
+    - PYTHONPATH='.' pytest
 
 tests3:
   script:
-  - pip3 install flake8 pytest .
+  - pip3 install flake8 pytest
   - flake8 nagare
-  - pytest
+  - PYTHONPATH='.' pytest
