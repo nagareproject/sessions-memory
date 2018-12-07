@@ -64,17 +64,6 @@ class Sessions(common.Sessions):
         """
         return session_id in self._sessions
 
-    def create_lock(self, session_id):
-        """Create a new lock for a session
-
-        In:
-          - ``session_id`` -- session id
-
-        Return:
-          - the lock
-        """
-        return self.local.worker.create_lock()
-
     def get_lock(self, session_id):
         """Retrieve the lock of a session
 
@@ -89,15 +78,17 @@ class Sessions(common.Sessions):
         except KeyError:
             raise ExpirationError()
 
-    def create(self, session_id, secure_id, lock):
+    def _create(self, session_id, secure_token):
         """Create a new session
 
         In:
           - ``session_id`` -- id of the session
-          - ``secure_id`` -- the secure number associated to the session
-          - ``lock`` -- the lock of the session
+          - ``secure_token`` -- the secure number associated to the session
         """
-        self._sessions[session_id] = [0, lock, secure_id, None, lru_dict.LRUDict(self.nb_states)]
+        lock = self.local.worker.create_lock()
+        self._sessions[session_id] = [0, lock, secure_token, None, lru_dict.LRUDict(self.nb_states)]
+
+        return session_id, 0, secure_token, lock
 
     def delete(self, session_id):
         """Delete a session
@@ -107,7 +98,7 @@ class Sessions(common.Sessions):
         """
         del self._sessions[session_id]
 
-    def fetch_state(self, session_id, state_id):
+    def _fetch(self, session_id, state_id):
         """Retrieve a state with its associated objects graph
 
         In:
@@ -121,20 +112,20 @@ class Sessions(common.Sessions):
           - data kept into the state
         """
         try:
-            last_state_id, _, secure_id, session_data, states = self._sessions[session_id]
+            last_state_id, _, secure_token, session_data, states = self._sessions[session_id]
             state_data = states[state_id]
         except KeyError:
             raise ExpirationError()
 
-        return last_state_id, secure_id, session_data, state_data
+        return last_state_id, secure_token, session_data, state_data
 
-    def store_state(self, session_id, state_id, secure_id, use_same_state, session_data, state_data):
+    def _store(self, session_id, state_id, secure_token, use_same_state, session_data, state_data):
         """Store a state and its associated objects graph
 
         In:
           - ``session_id`` -- session id of this state
           - ``state_id`` -- id of this state
-          - ``secure_id`` -- the secure number associated to the session
+          - ``secure_token`` -- the secure number associated to the session
           - ``use_same_state`` -- is this state to be stored in the previous snapshot?
           - ``session_data`` -- data to keep into the session
           - ``state_data`` -- data to keep into the state
@@ -144,6 +135,7 @@ class Sessions(common.Sessions):
         if not use_same_state:
             session[0] += 1
 
+        session[2] = secure_token
         session[3] = session_data
         session[4][state_id] = state_data
 
