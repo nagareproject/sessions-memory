@@ -30,7 +30,7 @@ setup(
     zip_safe=False,
     setup_requires=['setuptools_scm'],
     use_scm_version=True,
-    install_requires=['nagare'],
+    install_requires=['nagare-server-mvc'],
     entry_points='''
         [nagare.sessions]
         memory = nagare.sessions.memory_sessions:SessionsWithPickledStates
