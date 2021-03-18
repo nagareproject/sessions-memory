@@ -51,7 +51,7 @@ class Sessions(common.Sessions):
 
     def check_concurrence(self, multi_processes, multi_threads):
         if multi_processes:
-            raise TypeError("This <%s> sessions manager can't run in multi-processes" % self.name)
+            raise TypeError("this <%s> sessions manager can't run in multi-processes" % self.name)
 
     def check_session_id(self, session_id):
         """Test if a session exist
@@ -76,7 +76,7 @@ class Sessions(common.Sessions):
         try:
             return self._sessions[session_id][1]
         except KeyError:
-            raise ExpirationError()
+            raise ExpirationError('lock not found for session {}'.format(session_id))
 
     def _create(self, session_id, secure_token):
         """Create a new session
@@ -115,7 +115,7 @@ class Sessions(common.Sessions):
             last_state_id, _, secure_token, session_data, states = self._sessions[session_id]
             state_data = states[state_id]
         except KeyError:
-            raise ExpirationError()
+            raise ExpirationError('invalid session structure')
 
         return last_state_id, secure_token, session_data, state_data
 
