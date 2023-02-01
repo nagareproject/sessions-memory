@@ -1,5 +1,5 @@
 # --
-# Copyright (c) 2008-2022 Net-ng.
+# Copyright (c) 2008-2023 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -13,16 +13,15 @@ When this maximum is reached, the last recently used key is deleted when a new
 key is added.
 """
 
-import threading
-
 from collections import OrderedDict
+import threading
 
 
 class LRUDict(object):
-    """A LRU dictionary is a dictionary with a fixed maximum number of keys"""
+    """A LRU dictionary is a dictionary with a fixed maximum number of keys."""
 
     def __init__(self, size):
-        """Initialization
+        """Initialization.
 
         In:
           -  ``size`` -- maximum number of keys
@@ -31,7 +30,7 @@ class LRUDict(object):
         self.dict = OrderedDict()
 
     def __contains__(self, k):
-        """Test if a key exists into this dictionary
+        """Test if a key exists into this dictionary.
 
         In:
           -  ``k`` -- the key
@@ -58,7 +57,7 @@ class LRUDict(object):
         return v
 
     def __setitem__(self, k, v):
-        """Insert a key as the last recently used
+        """Insert a key as the last recently used.
 
         In:
            - ``k`` -- the key
@@ -86,14 +85,14 @@ class LRUDict(object):
 
 
 class ThreadSafeLRUDict(LRUDict):
-    """Tread safe version of a LRU dictionary"""
+    """Tread safe version of a LRU dictionary."""
 
     def __init__(self, *args, **kw):
         super(ThreadSafeLRUDict, self).__init__(*args, **kw)
         self.lock = threading.RLock()
 
     def __contains__(self, k):
-        """Test if a key exists into this dictionary
+        """Test if a key exists into this dictionary.
 
         In:
           -  ``k`` -- the key

@@ -1,5 +1,5 @@
 # --
-# Copyright (c) 2008-2022 Net-ng.
+# Copyright (c) 2008-2023 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -7,7 +7,7 @@
 # this distribution.
 # --
 
-"""Sessions managed in memory
+"""Sessions managed in memory.
 
 These sessions managers keep:
   - the last recently used ``DEFAULT_NB_SESSIONS`` sessions
@@ -22,22 +22,25 @@ DEFAULT_NB_STATES = 20
 
 
 class Sessions(common.Sessions):
-    """Sessions manager for states kept in memory
-    """
+    """Sessions manager for states kept in memory."""
+
     CONFIG_SPEC = dict(
         common.Sessions.CONFIG_SPEC,
         nb_sessions='integer(default=%d)' % DEFAULT_NB_SESSIONS,
-        nb_states='integer(default=%d)' % DEFAULT_NB_STATES
+        nb_states='integer(default=%d)' % DEFAULT_NB_STATES,
     )
 
     def __init__(
-            self,
-            name, dist,
-            local_service, services_service,
-            nb_sessions=DEFAULT_NB_SESSIONS, nb_states=DEFAULT_NB_STATES,
-            **config
+        self,
+        name,
+        dist,
+        local_service,
+        services_service,
+        nb_sessions=DEFAULT_NB_SESSIONS,
+        nb_states=DEFAULT_NB_STATES,
+        **config,
     ):
-        """Initialization
+        """Initialization.
 
         In:
           - ``nb_sessions`` -- maximum number of sessions kept in memory
@@ -54,7 +57,7 @@ class Sessions(common.Sessions):
             raise TypeError("this <%s> sessions manager can't run in multi-processes" % self.name)
 
     def check_session_id(self, session_id):
-        """Test if a session exist
+        """Test if a session exist.
 
         In:
           - ``session_id`` -- id of a session
@@ -65,7 +68,7 @@ class Sessions(common.Sessions):
         return session_id in self._sessions
 
     def get_lock(self, session_id):
-        """Retrieve the lock of a session
+        """Retrieve the lock of a session.
 
         In:
           - ``session_id`` -- session id
@@ -79,7 +82,7 @@ class Sessions(common.Sessions):
             raise ExpirationError('lock not found for session {}'.format(session_id))
 
     def _create(self, session_id, secure_token):
-        """Create a new session
+        """Create a new session.
 
         In:
           - ``session_id`` -- id of the session
@@ -91,7 +94,7 @@ class Sessions(common.Sessions):
         return session_id, 0, secure_token, lock
 
     def delete(self, session_id):
-        """Delete a session
+        """Delete a session.
 
         In:
           - ``session_id`` -- id of the session to delete
@@ -99,7 +102,7 @@ class Sessions(common.Sessions):
         del self._sessions[session_id]
 
     def _fetch(self, session_id, state_id):
-        """Retrieve a state with its associated objects graph
+        """Retrieve a state with its associated objects graph.
 
         In:
           - ``session_id`` -- session id of this state
@@ -120,7 +123,7 @@ class Sessions(common.Sessions):
         return last_state_id, secure_token, session_data, state_data
 
     def _store(self, session_id, state_id, secure_token, use_same_state, session_data, state_data):
-        """Store a state and its associated objects graph
+        """Store a state and its associated objects graph.
 
         In:
           - ``session_id`` -- session id of this state
@@ -141,9 +144,6 @@ class Sessions(common.Sessions):
 
 
 class SessionsWithPickledStates(Sessions):
-    """Sessions manager for states pickled / unpickled in memory
-    """
-    CONFIG_SPEC = dict(
-        Sessions.CONFIG_SPEC,
-        serializer='string(default="nagare.sessions.serializer:Pickle")'
-    )
+    """Sessions manager for states pickled / unpickled in memory."""
+
+    CONFIG_SPEC = dict(Sessions.CONFIG_SPEC, serializer='string(default="nagare.sessions.serializer:Pickle")')

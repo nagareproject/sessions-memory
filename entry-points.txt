@@ -1,0 +1,2 @@
+[nagare.sessions]
+memory = nagare.sessions.memory_sessions:SessionsWithPickledStates
