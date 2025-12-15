@@ -1,5 +1,5 @@
 # --
-# Copyright (c) 2008-2024 Net-ng.
+# Copyright (c) 2014-2025 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -17,7 +17,7 @@ import threading
 from collections import OrderedDict
 
 
-class LRUDict(object):
+class LRUDict:
     """A LRU dictionary is a dictionary with a fixed maximum number of keys."""
 
     def __init__(self, size):
@@ -88,7 +88,7 @@ class ThreadSafeLRUDict(LRUDict):
     """Tread safe version of a LRU dictionary."""
 
     def __init__(self, *args, **kw):
-        super(ThreadSafeLRUDict, self).__init__(*args, **kw)
+        super().__init__(*args, **kw)
         self.lock = threading.RLock()
 
     def __contains__(self, k):
@@ -101,16 +101,16 @@ class ThreadSafeLRUDict(LRUDict):
           - a boolean
         """
         with self.lock:
-            return super(ThreadSafeLRUDict, self).__contains__(k)
+            return super().__contains__(k)
 
     def __getitem__(self, k):
         with self.lock:
-            return super(ThreadSafeLRUDict, self).__getitem__(k)
+            return super().__getitem__(k)
 
     def __setitem__(self, k, v):
         with self.lock:
-            super(ThreadSafeLRUDict, self).__setitem__(k, v)
+            super().__setitem__(k, v)
 
     def __delitem__(self, k):
         with self.lock:
-            super(ThreadSafeLRUDict, self).__delitem__(k)
+            super().__delitem__(k)

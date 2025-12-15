@@ -1,5 +1,5 @@
 # --
-# Copyright (c) 2008-2024 Net-ng.
+# Copyright (c) 2014-2025 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -24,11 +24,10 @@ DEFAULT_NB_STATES = 20
 class Sessions(common.Sessions):
     """Sessions manager for states kept in memory."""
 
-    CONFIG_SPEC = dict(
-        common.Sessions.CONFIG_SPEC,
-        nb_sessions='integer(default=%d)' % DEFAULT_NB_SESSIONS,
-        nb_states='integer(default=%d)' % DEFAULT_NB_STATES,
-    )
+    CONFIG_SPEC = common.Sessions.CONFIG_SPEC | {
+        'nb_sessions': 'integer(default=%d)' % DEFAULT_NB_SESSIONS,
+        'nb_states': 'integer(default=%d)' % DEFAULT_NB_STATES,
+    }
 
     def __init__(
         self,
@@ -46,7 +45,7 @@ class Sessions(common.Sessions):
           - ``nb_sessions`` -- maximum number of sessions kept in memory
           - ``nb_states`` -- maximum number of states, for each sessions, kept in memory
         """
-        services_service(super(Sessions, self).__init__, name, dist, **config)
+        services_service(super().__init__, name, dist, **config)
 
         self.local = local_service
         self.nb_states = nb_states
@@ -146,4 +145,4 @@ class Sessions(common.Sessions):
 class SessionsWithPickledStates(Sessions):
     """Sessions manager for states pickled / unpickled in memory."""
 
-    CONFIG_SPEC = dict(Sessions.CONFIG_SPEC, serializer='string(default="nagare.sessions.serializer:Pickle")')
+    CONFIG_SPEC = Sessions.CONFIG_SPEC | {'serializer': 'string(default="nagare.sessions.serializer:Pickle")'}
